@@ -2,16 +2,15 @@
 import { db } from "@/app/config/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import Head from "next/head";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Task } from "@/types/types";
 import TableTasks from "@/components/TableTasks";
 import { Button } from "@heroui/button";
-import { useRouter } from "next/navigation";
+import { redirect } from 'next/navigation'
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const router = useRouter();
+
 
   const getTasks = async () => {
     try {
@@ -42,7 +41,7 @@ export default function Home() {
             variant="shadow"
             className="mt-8"
             onPress={() => {
-              router.push("/create");
+              redirect("/create");
             }}
           >
             New Task

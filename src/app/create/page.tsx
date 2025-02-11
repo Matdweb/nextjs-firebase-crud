@@ -1,15 +1,12 @@
 'use client';
 import { db } from "@/app/config/firebase";
 import { addDoc, collection } from "firebase/firestore";
-import { useState } from "react";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import { Task } from "@/types/types";
-import { useRouter } from "next/navigation";
+import { redirect } from 'next/navigation'
 
 export default function Create() {
-    const router = useRouter();
 
     const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -21,7 +18,7 @@ export default function Create() {
                 name,
                 description
             });
-            router.push("/");
+            redirect("/");
         } catch (error) {
             console.log("Error adding document: ", error);
         }
@@ -66,7 +63,6 @@ export default function Create() {
                     </div>
                 </Form>
             </div>
-
         </section>
     );
 }
