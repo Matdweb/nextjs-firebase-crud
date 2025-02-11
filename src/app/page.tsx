@@ -45,7 +45,7 @@ export default function Home() {
               router.push("/create");
             }}
           >
-            Create New
+            New Task
           </Button>
         </div>
         <TableTasks tasks={tasks} />

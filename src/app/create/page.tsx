@@ -1,81 +1,73 @@
-'use client'
+'use client';
 import { db } from "@/app/config/firebase";
 import { addDoc, collection } from "firebase/firestore";
-import Head from "next/head";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Form } from "@heroui/form";
+import { Input } from "@heroui/input";
+import { Button } from "@heroui/button";
 import { Task } from "@/types/types";
-
-//TODO: USE GLOBAL REF COLLECTION
+import { useRouter } from "next/navigation";
 
 export default function Create() {
     const router = useRouter();
 
-    const [task, setTask] = useState<Task>({
-        id: "",
-        name: "",
-        description: "",
-    });
+    const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const { name, description } = Object.fromEntries(new FormData(e.currentTarget));
 
-    const hanldeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setTask({ ...task, [e.target.name]: e.target.value });
-    };
-
-
-    const handleCreate = async () => {
         const coll = collection(db, "tasks");
         try {
             addDoc(coll, {
-                name: task.name,
-                description: task.description,
+                name,
+                description
             });
             router.push("/");
-        } catch (error) { 
+        } catch (error) {
             console.log("Error adding document: ", error);
         }
     };
 
+
     return (
-        <>
-            <>
-                <div className="container mx-auto mt-8 max-w-[560px]">
-                    <div className="flex justify-between items-center pb-4 border-b border-dashed border-gray-900 mb-4">
-                        <h1 className="text-3xl font-semibold">Create Task</h1>
+        <section className="w-full max-w-xs m-auto">
+            <div className="flex flex-col justify-center items-start gap-4">
+                <h1 className="text-2xl font-bold text-center left-0 mt-8">Create Task</h1>
+                <Form
+                    className="w-full max-w-xs flex flex-col gap-4"
+                    validationBehavior="native"
+                    onSubmit={(e) => handleCreate(e)}
+                >
+                    <Input
+                        isRequired
+                        errorMessage="Please enter a task name"
+                        label="Name"
+                        labelPlacement="outside"
+                        name="name"
+                        placeholder="Enter a name for your Task"
+                        type="text"
+                    />
+
+                    <Input
+                        isRequired
+                        errorMessage="Please enter a Task description"
+                        label="Description"
+                        labelPlacement="outside"
+                        name="description"
+                        placeholder="Enter a description for your Task"
+                        type="text"
+                    />
+                    <div className="flex gap-2">
+                        <Button color="primary" type="submit">
+                            Create
+                        </Button>
+                        <Button type="reset" variant="flat">
+                            Reset
+                        </Button>
                     </div>
-                    <form>
-                        <div className="mb-4">
-                            <label>Title</label>
-                            <input
-                                className="mt-1 px-4 py-2 border border-gray-300 rounded-md block w-full text-black"
-                                type="text"
-                                name="name"
-                                value={task?.name}
-                                onChange={hanldeChange}
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label>Description</label>
-                            <input
-                                className="mt-1 px-4 py-2 border border-gray-300 rounded-md block w-full text-black"
-                                type="text"
-                                name="description"
-                                value={task?.description}
-                                onChange={hanldeChange}
-                            />
-                        </div>
-                        <button
-                            className="bg-green-600 hover:bg-opacity-80 text-white rounded-lg px-4 py-2 duration-200 w-full"
-                            type="button"
-                            onClick={handleCreate}
-                        >
-                            Create Task
-                        </button>
-                    </form>
-                </div>
-                <Head>
-                    <title>Create Task</title>
-                </Head>
-            </>
-        </>
+                </Form>
+            </div>
+
+        </section>
     );
 }
+
