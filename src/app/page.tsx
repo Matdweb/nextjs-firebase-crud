@@ -6,9 +6,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Task } from "@/types/types";
 import TableTasks from "@/components/TableTasks";
+import { Button } from "@heroui/button";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const router = useRouter();
 
   const getTasks = async () => {
     try {
@@ -34,12 +37,16 @@ export default function Home() {
       <div className="container mx-auto max-w-[560px]">
         <div className="flex justify-between items-center pb-4 border-b border-dashed border-gray-900 mb-4">
           <h1 className="text-3xl font-semibold mt-8">Tasks</h1>
-          <Link
-            className="bg-green-600 hover:bg-opacity-80 text-white rounded-lg px-4 py-2 duration-200 mt-8"
-            href="/create"
+          <Button
+            color="primary"
+            variant="shadow"
+            className="mt-8"
+            onPress={() => {
+              router.push("/create");
+            }}
           >
             Create New
-          </Link>
+          </Button>
         </div>
         <TableTasks tasks={tasks} />
       </div>
