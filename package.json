@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@heroui/button": "^2.2.10",
+    "@heroui/form": "^2.1.9",
+    "@heroui/input": "^2.4.10",
     "@heroui/system": "^2.4.7",
     "@heroui/table": "^2.2.9",
     "@heroui/theme": "^2.4.6",
