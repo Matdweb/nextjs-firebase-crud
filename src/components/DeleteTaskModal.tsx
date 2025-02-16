@@ -1,5 +1,5 @@
 'use client'
-import { db } from "@/app/config/firebase";
+import { db } from "@/app/lib/firebase";
 import { deleteDoc, doc } from "firebase/firestore";
 import {
     Modal,
