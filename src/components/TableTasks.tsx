@@ -138,7 +138,7 @@ export default function TableTasks({ tasks, setTasks }: Props) {
                 <TableCell>{task.description}</TableCell>
                 <TableCell>
                   {<div className="relative flex items-center gap-2">
-                    <Tooltip content="Edit task" className="text-black">
+                    <Tooltip content="Edit task">
                       <span
                         className="text-lg text-default-400 cursor-pointer active:opacity-50"
                         onClick={() => handleEdit(task.id)}
