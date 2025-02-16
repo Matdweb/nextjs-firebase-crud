@@ -26,10 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`dark bg-background ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Providers>
-          <main className="dark h-screen">
+          <main className="h-screen">
             {children}
           </main>
         </Providers>

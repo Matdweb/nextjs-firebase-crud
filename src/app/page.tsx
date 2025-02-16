@@ -11,7 +11,6 @@ import { redirect } from 'next/navigation'
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
 
-
   const getTasks = async () => {
     try {
       const coll = collection(db, "tasks");
@@ -47,7 +46,7 @@ export default function Home() {
             New Task
           </Button>
         </div>
-        <TableTasks tasks={tasks} />
+        <TableTasks tasks={tasks} setTasks={setTasks} />
       </div>
       <Head>
         <title>Task</title>

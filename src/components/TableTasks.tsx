@@ -1,8 +1,12 @@
+'use client'
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/table";
 import { Tooltip } from "@heroui/tooltip";
 import React, { SVGProps } from "react";
 import { Task } from "@/types/types";
 import { useRouter } from "next/navigation";
+import DeleteModal from "./DeleteTaskModal";
+import { useDisclosure } from "@heroui/modal";
+import { useState } from "react";
 
 export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
@@ -99,55 +103,66 @@ export const EditIcon = (props: IconSvgProps) => {
   );
 };
 
-export default function App({ tasks }: { tasks: Task[] }) {
-  const router = useRouter();
+interface Props {
+  tasks: Task[];
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+}
 
-  const handleDeleteIcon = (id: string) => {
-    router.push(`/delete/${id}`);
+export default function TableTasks({ tasks, setTasks }: Props) {
+  const router = useRouter();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [id, setId] = useState<string | null>(null);
+
+  const handleDelete = (id: string) => {
+    setId(id);
+    onOpen();
   }
 
-  const handleEditIcon = (id: string) => {
+  const handleEdit = (id: string) => {
     router.push(`/edit/${id}`);
   }
 
   return (
-    <Table aria-label="Example static collection table">
-      <TableHeader>
-        <TableColumn>NAME</TableColumn>
-        <TableColumn>DESCRIPTION</TableColumn>
-        <TableColumn>ACTIONS</TableColumn>
-      </TableHeader>
-      <TableBody emptyContent={"No rows to display."}>
-        {tasks.map((task) => {
-          return (
-            <TableRow key={task.id}>
-              <TableCell>{task.name}</TableCell>
-              <TableCell>{task.description}</TableCell>
-              <TableCell>
-                {<div className="relative flex items-center gap-2">
-                  <Tooltip content="Edit user" className="text-black">
-                    <span
-                      className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                      onClick={() => handleEditIcon(task.id)}
-                    >
-                      <EditIcon />
-                    </span>
-                  </Tooltip>
-                  <Tooltip color="danger" content="Delete user">
-                    <span
-                    className="text-lg text-danger cursor-pointer active:opacity-50"
-                    onClick={() => handleDeleteIcon(task.id)}
-                    >
-                      <DeleteIcon />
-                    </span>
-                  </Tooltip>
-                </div>}
-              </TableCell>
-            </TableRow>
-          )
-        })
-        }
-      </TableBody>
-    </Table>
+    <>
+      <Table aria-label="Example static collection table">
+        <TableHeader>
+          <TableColumn>NAME</TableColumn>
+          <TableColumn>DESCRIPTION</TableColumn>
+          <TableColumn>ACTIONS</TableColumn>
+        </TableHeader>
+        <TableBody emptyContent={"No rows to display."}>
+          {tasks.map((task) => {
+            return (
+              <TableRow key={task.id}>
+                <TableCell>{task.name}</TableCell>
+                <TableCell>{task.description}</TableCell>
+                <TableCell>
+                  {<div className="relative flex items-center gap-2">
+                    <Tooltip content="Edit task" className="text-black">
+                      <span
+                        className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                        onClick={() => handleEdit(task.id)}
+                      >
+                        <EditIcon />
+                      </span>
+                    </Tooltip>
+                    <Tooltip color="danger" content="Delete task">
+                      <span
+                        className="text-lg text-danger cursor-pointer active:opacity-50"
+                        onClick={() => handleDelete(task.id)}
+                      >
+                        <DeleteIcon />
+                      </span>
+                    </Tooltip>
+                  </div>}
+                </TableCell>
+              </TableRow>
+            )
+          })
+          }
+        </TableBody>
+      </Table>
+      <DeleteModal isOpen={isOpen} onClose={onClose} idTask={id} setTasks={setTasks} />
+    </>
   );
 }

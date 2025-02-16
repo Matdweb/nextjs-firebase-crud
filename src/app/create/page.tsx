@@ -4,10 +4,10 @@ import { addDoc, collection } from "firebase/firestore";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 export default function Create() {
-
+    const { push } = useRouter();
     const handleCreate = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const { name, description } = Object.fromEntries(new FormData(e.currentTarget));
@@ -18,7 +18,7 @@ export default function Create() {
                 name,
                 description
             });
-            redirect("/");
+            push("/");
         } catch (error) {
             console.log("Error adding document: ", error);
         }
