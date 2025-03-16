@@ -18,7 +18,7 @@
     "@heroui/table": "^2.2.9",
     "@heroui/theme": "^2.4.6",
     "@heroui/tooltip": "^2.2.8",
-    "firebase": "^11.3.0",
+    "firebase": "^11.4.0",
     "framer-motion": "^12.4.1",
     "next": "15.1.6",
     "react": "^19.0.0",
