@@ -9,10 +9,9 @@ import { useActionState } from "react";
 import { Alert } from "@heroui/alert";
 import { authenticateActionErrors } from "../lib/definitions";
 import { startTransition } from "react";
-import {Spinner} from "@heroui/spinner";
+import { Spinner } from "@heroui/spinner";
 
 export default function App() {
-    //const [password, setPassword] = useState<string>("");
     const [serverResponse, formAction, isPending] = useActionState(
         createUser,
         undefined,
@@ -94,7 +93,7 @@ export default function App() {
 
     return (
         <section className="w-full">
-            <h1 className="text-2xl font-bold text-center left-0 py-8">Sign In</h1>
+            <h1 className="text-2xl font-bold text-center left-0 py-8">Sign Up</h1>
             <Form
                 className="w-full justify-center items-center space-y-4"
                 validationBehavior="native"
