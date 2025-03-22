@@ -1,5 +1,5 @@
 'use client';
-import { db } from "@/app/lib/firebase";
+import { db } from "../../../firebase";
 import { addDoc, collection } from "firebase/firestore";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
