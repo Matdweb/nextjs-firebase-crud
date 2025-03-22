@@ -2,7 +2,7 @@
 import { z } from 'zod';
 import { auth } from '../../../firebase'
 import { authenticateActionState } from '../lib/definitions';
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
 
 const FormSchema = z.object({
   name: z.string()
@@ -53,6 +53,43 @@ export async function createUser(
         email: errorCode === 'auth/email-already-in-use' ? ['Email already in use.'] : [''],
       },
       message: ['Something went wrong. Failed to create user.', errorCode],
+    }
+  };
+}
+
+const signInFormSchema = FormSchema.omit({ name: true });
+
+export async function signIn(
+  prevState: authenticateActionState,
+  formData: FormData,
+) {
+
+  const validatedFields = signInFormSchema.safeParse({
+    email: formData.get('email') as string,
+    password: formData.get('password') as string,
+  });
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      errors: validatedFields.error.flatten().fieldErrors,
+      message: ['Something seems odd. Failed to sign in.'],
+    };
+  }
+
+  const { email, password } = validatedFields.data;
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password)
+  } catch (error: any) {
+    const errorCode = error?.code || "";
+    const errorMessage = error?.message || "";
+    console.log(errorCode, errorMessage)
+
+
+    return {
+      success: false,
+      errors: {},
+      message: ['Something went wrong. Failed to sign in.', errorCode == 'auth/invalid-credential' ? 'Invalid credentials' : ''],
     }
   };
 }
