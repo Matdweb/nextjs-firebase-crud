@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { z } from "zod";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
@@ -11,6 +11,9 @@ import { authenticateActionErrors } from "../lib/definitions";
 import { startTransition } from "react";
 import { Spinner } from "@heroui/spinner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { auth } from "../../../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function App() {
     const [serverResponse, formAction, isPending] = useActionState(
@@ -18,6 +21,7 @@ export default function App() {
         undefined,
     );
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const router = useRouter();
 
     const passwordSchema = z.string({
         required_error: "Password is required",
@@ -90,6 +94,22 @@ export default function App() {
     //TODO: redirect user to signIn when user is created
     useEffect(() => {
         handleServerErrors();
+
+        // if (serverResponse?.success) {
+        //     router.push("/");
+        // }
+    }, [serverResponse]);
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log('User is signed in', user)
+                return user;
+            } else {
+                console.log('User is signed out')
+                return null;
+            }
+        });
     }, [serverResponse]);
 
     return (

@@ -86,12 +86,11 @@ export async function signIn(
   const { email, password } = validatedFields.data;
   try {
     await signInWithEmailAndPassword(auth, email, password);
+
   } catch (error: any) {
     const errorCode = error?.code || "";
     const errorMessage = error?.message || "";
-    console.log(errorCode, errorMessage)
-
-
+    
     return {
       success: false,
       errors: {},
