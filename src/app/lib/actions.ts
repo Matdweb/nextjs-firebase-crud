@@ -2,14 +2,14 @@
 import { z } from 'zod';
 import { auth } from '../../../firebase'
 import { authenticateActionState } from '../lib/definitions';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword  } from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 
 const FormSchema = z.object({
   name: z.string()
-  .min(1)
-  .refine((value) => value != "admin", {
-    message: 'Well well well, you are clever. But you are not admin.',
-  }),
+    .min(1)
+    .refine((value) => value != "admin", {
+      message: 'Well well well, you are clever. But you are not admin.',
+    }),
   email: z.string().email(),
   password: z.string().trim().min(6), //if somone creates a password with blank spaces, it trigegrs an error
 });
@@ -36,8 +36,14 @@ export async function createUser(
   const { name, email, password } = validatedFields.data;
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-    //TODO: update user's data
+    const { user } = userCredential;
 
+    if (user) {
+      updateProfile(user,{
+        displayName: name
+      });
+    }
+    
     return {
       success: true,
       errors: {},
@@ -79,7 +85,7 @@ export async function signIn(
 
   const { email, password } = validatedFields.data;
   try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password)
+    await signInWithEmailAndPassword(auth, email, password);
   } catch (error: any) {
     const errorCode = error?.code || "";
     const errorMessage = error?.message || "";

@@ -191,7 +191,7 @@ export default function App() {
                                 <div className="w-full flex items-center my-3">
                                     <Alert
                                         color={"danger"}
-                                        title={serverResponse?.message}
+                                        title={serverResponse?.message[0]}
                                         description={serverResponse.message[1] || ""}
 
                                     />
