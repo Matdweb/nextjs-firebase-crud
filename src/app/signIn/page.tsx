@@ -1,23 +1,27 @@
 'use client'
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { z } from "zod";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
-import { createUser } from "../lib/actions";
+import { signIn } from "../lib/actions";
 import { useActionState } from "react";
 import { Alert } from "@heroui/alert";
 import { authenticateActionErrors } from "../lib/definitions";
 import { startTransition } from "react";
 import { Spinner } from "@heroui/spinner";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { auth } from "../../../firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function App() {
     const [serverResponse, formAction, isPending] = useActionState(
-        createUser,
+        signIn,
         undefined,
     );
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const router = useRouter();
 
     const passwordSchema = z.string({
         required_error: "Password is required",
@@ -90,11 +94,27 @@ export default function App() {
     //TODO: redirect user to signIn when user is created
     useEffect(() => {
         handleServerErrors();
+
+        // if (serverResponse?.success) {
+        //     router.push("/");
+        // }
+    }, [serverResponse]);
+
+    useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                console.log('User is signed in', user)
+                return user;
+            } else {
+                console.log('User is signed out')
+                return null;
+            }
+        });
     }, [serverResponse]);
 
     return (
         <section className="w-full">
-            <h1 className="text-2xl font-bold text-center left-0 py-8">Sign Up</h1>
+            <h1 className="text-2xl font-bold text-center left-0 py-8">Sign In</h1>
             <Form
                 className="w-full justify-center items-center space-y-4"
                 validationBehavior="native"
@@ -106,20 +126,6 @@ export default function App() {
                 }}
             >
                 <div className="w-full px-8 flex flex-col gap-4 max-w-md">
-                    <Input
-                        isRequired
-                        errorMessage={({ validationDetails }) => {
-                            if (validationDetails.valueMissing) {
-                                return "Please enter your name";
-                            }
-                            return errors.name;
-                        }}
-                        label="Name"
-                        labelPlacement="outside"
-                        name="name"
-                        placeholder="Enter your name"
-                    />
-
                     <Input
                         isRequired
                         errorMessage={({ validationDetails }) => {
@@ -138,7 +144,7 @@ export default function App() {
                         placeholder="Enter your email"
                         type="email"
                     />
-
+                    {/* Add eye for password */}
                     <Input
                         isRequired
                         errorMessage={({ validationDetails }) => {
@@ -167,7 +173,7 @@ export default function App() {
                                 isPending ?
                                     <Spinner color="white" variant="dots" />
                                     :
-                                    "Create user"
+                                    "Sign In"
                             }
                         </Button>
                         <Button
@@ -203,7 +209,7 @@ export default function App() {
             </Form>
             <section className="mt-8 text-gray-400">
                 <p className="text-center">
-                    You already have an account? <Link href="/signIn" className="text-blue-500">Sign In</Link>
+                    Don't have an account? <Link href="/signUp" className="text-blue-500">Sign Up</Link>
                 </p>
             </section>
         </section>
