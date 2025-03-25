@@ -10,6 +10,7 @@ import { Alert } from "@heroui/alert";
 import { authenticateActionErrors } from "../lib/definitions";
 import { startTransition } from "react";
 import { Spinner } from "@heroui/spinner";
+import Link from "next/link";
 
 export default function App() {
     const [serverResponse, formAction, isPending] = useActionState(
@@ -200,6 +201,11 @@ export default function App() {
                     }
                 </div>
             </Form>
+            <section className="mt-8 text-gray-400">
+                <p className="text-center">
+                    You already have an account? <Link href="/signIn" className="text-blue-500">Sign In</Link>
+                </p>
+            </section>
         </section>
     );
 }
