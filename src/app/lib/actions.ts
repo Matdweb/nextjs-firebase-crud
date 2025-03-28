@@ -39,11 +39,11 @@ export async function createUser(
     const { user } = userCredential;
 
     if (user) {
-      updateProfile(user,{
+      updateProfile(user, {
         displayName: name
       });
     }
-    
+
     return {
       success: true,
       errors: {},
@@ -80,21 +80,34 @@ export async function signIn(
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
       message: ['Something seems odd. Failed to sign in.'],
+      user: null,
     };
   }
 
   const { email, password } = validatedFields.data;
   try {
-    await signInWithEmailAndPassword(auth, email, password);
+    const { user } = await signInWithEmailAndPassword(auth, email, password);
+
+    return {
+      success: true,
+      errors: {},
+      message: ['User signed In succesfully'],
+      user: {
+        uid: user.uid || "",
+        email: user.email || "",
+        displayName: user.displayName || "",
+      }
+    }
 
   } catch (error: any) {
     const errorCode = error?.code || "";
     const errorMessage = error?.message || "";
-    
+
     return {
       success: false,
       errors: {},
-      message: ['Something went wrong. Failed to sign in.', errorCode == 'auth/invalid-credential' ? 'Invalid credentials' : ''],
+      message: ['Something went wrong. Failed to sign in.', errorCode == 'auth/invalid-credential' ? 'Invalid credentials' : errorMessage],
+      user: null,
     }
   };
 }

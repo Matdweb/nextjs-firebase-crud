@@ -1,19 +1,17 @@
 'use client'
-import { use, useEffect, useState } from "react";
+import { useEffect, useState,useActionState } from "react";
 import { z } from "zod";
 import { Form } from "@heroui/form";
 import { Input } from "@heroui/input";
 import { Button } from "@heroui/button";
 import { signIn } from "../lib/actions";
-import { useActionState } from "react";
 import { Alert } from "@heroui/alert";
 import { authenticateActionErrors } from "../lib/definitions";
 import { startTransition } from "react";
 import { Spinner } from "@heroui/spinner";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { auth } from "../../../firebase";
-import { onAuthStateChanged } from "firebase/auth";
+import { useSession } from "@/context/SessionContext";
 
 export default function App() {
     const [serverResponse, formAction, isPending] = useActionState(
@@ -22,6 +20,7 @@ export default function App() {
     );
     const [errors, setErrors] = useState<Record<string, string>>({});
     const router = useRouter();
+    const { session, setSession } = useSession();
 
     const passwordSchema = z.string({
         required_error: "Password is required",
@@ -81,6 +80,12 @@ export default function App() {
             setErrors(formatErrors());
         } else {
             setErrors({});
+
+            setSession({
+                user: serverResponse?.user || null,
+                authenticated: true,
+                isLoading: false
+            });
         }
     }
 
@@ -91,26 +96,15 @@ export default function App() {
         });
     }
 
-    //TODO: redirect user to signIn when user is created
     useEffect(() => {
         handleServerErrors();
-
-        // if (serverResponse?.success) {
-        //     router.push("/");
-        // }
     }, [serverResponse]);
 
     useEffect(() => {
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                console.log('User is signed in', user)
-                return user;
-            } else {
-                console.log('User is signed out')
-                return null;
-            }
-        });
-    }, [serverResponse]);
+        if (session.authenticated) {
+            router.push("/");
+        }
+    }, [session]);
 
     return (
         <section className="w-full">

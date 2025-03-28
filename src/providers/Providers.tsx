@@ -1,9 +1,12 @@
-import {HeroUIProvider} from '@heroui/system';
+import { HeroUIProvider } from '@heroui/system';
+import { SessionContextProvider } from '@/context/SessionContext';
 
-export function Providers({children}: { children: React.ReactNode }) {
+export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <HeroUIProvider>
-      {children}
+      <SessionContextProvider>
+        {children}
+      </SessionContextProvider>
     </HeroUIProvider>
   )
 }
