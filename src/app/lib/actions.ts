@@ -30,6 +30,7 @@ export async function createUser(
       success: false,
       errors: validatedFields.error.flatten().fieldErrors,
       message: ['Something seems odd. Failed to create User.'],
+      user: null
     };
   }
 
@@ -48,6 +49,11 @@ export async function createUser(
       success: true,
       errors: {},
       message: ['User created successfully.'],
+      user: {
+        uid: user.uid || "",
+        email: user.email || "",
+        displayName: user.displayName || "",
+      }
     }
   } catch (error: any) {
     const errorCode = error?.code || "";
@@ -59,6 +65,7 @@ export async function createUser(
         email: errorCode === 'auth/email-already-in-use' ? ['Email already in use.'] : [''],
       },
       message: ['Something went wrong. Failed to create user.', errorCode],
+      user: null,
     }
   };
 }
