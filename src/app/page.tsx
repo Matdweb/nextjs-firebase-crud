@@ -7,13 +7,9 @@ import { Task } from "@/types/types";
 import TableTasks from "@/components/TableTasks";
 import { Button } from "@heroui/button";
 import { redirect } from 'next/navigation'
-import { useSession } from "@/context/SessionContext";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const { session } = useSession()
-  const router = useRouter();
 
   const getTasks = async () => {
     try {
