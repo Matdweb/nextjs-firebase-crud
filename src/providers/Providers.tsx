@@ -20,7 +20,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     ) {
       router.push("/signIn");
     }
-  }, []);
+  }, [session]);
 
   return (
     <HeroUIProvider>
