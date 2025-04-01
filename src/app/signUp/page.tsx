@@ -87,7 +87,6 @@ export default function App() {
         });
     }
 
-    //TODO: redirect user to signIn when user is created
     useEffect(() => {
         handleServerErrors();
     }, [serverResponse]);

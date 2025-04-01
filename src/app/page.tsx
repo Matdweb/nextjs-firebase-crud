@@ -6,10 +6,15 @@ import { useEffect, useState } from "react";
 import { Task } from "@/types/types";
 import TableTasks from "@/components/TableTasks";
 import { Button } from "@heroui/button";
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
+import { User } from "@heroui/user";
+import { useSession } from "@/context/SessionContext";
+import { Tooltip } from "@heroui/tooltip";
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const { session, setSession } = useSession();
+  const { user } = session;
 
   const getTasks = async () => {
     try {
@@ -26,8 +31,18 @@ export default function Home() {
     }
   }
 
+  const signOut = async () => {
+    setSession({
+      user: null,
+      authenticated: false,
+      isLoading: false
+    });
+
+    redirect("/signIn");
+  }
+
   useEffect(() => {
-    getTasks()
+    getTasks();
   }, [])
 
   return (
@@ -48,6 +63,19 @@ export default function Home() {
         </div>
         <TableTasks tasks={tasks} setTasks={setTasks} />
       </div>
+
+      <Tooltip color={"primary"} content={"Sign Out"} placement={"left"}>
+        <User
+          avatarProps={{
+            src: "https://i.pravatar.cc/150",
+          }}
+          description={session?.user?.email}
+          name={session?.user?.displayName}
+          className="absolute bottom-0 right-0 m-4 cursor-pointer"
+          onClick={signOut}
+        />
+      </Tooltip>
+
       <Head>
         <title>Task</title>
       </Head>
