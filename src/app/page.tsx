@@ -32,10 +32,6 @@ export default function Home() {
 
   useEffect(() => {
     getTasks();
-
-    if (!(session.authenticated)) {
-      router.push("/signIn"); //note that this is a client side redirect
-    } //so the animation still loads this page and then redirects
   }, [])
 
   return (
